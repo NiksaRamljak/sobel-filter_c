@@ -9,3 +9,10 @@ for img in ./test_jpeg/*.{jpg,jpeg}; do
     perf stat -o "$log_file" ./build/fltr_sobel_test "$img" "./output/${img_name}.jpg"
     echo "Processed $img, stats saved to $log_file"
 done
+
+for img in ./test_pgm/*.pgm; do
+    img_name=$(basename "$img" .pgm)
+    log_file="./performance_logs/statsfor${img_name}.txt"
+    perf stat -o "$log_file" ./build/fltr_sobel_test "$img" "./output/${img_name}.pgm"
+    echo "Processed $img, stats saved to $log_file"
+done
