@@ -14,3 +14,7 @@ tested only on linux
 
 **performance_noext.sh** tests the performance of fltr_sobel
 both output to ./performance_logs
+
+syntax is as follows:
+```fltr_sobel <input_file> <output_file> -t <threads>
+```
