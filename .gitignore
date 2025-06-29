@@ -1,0 +1,8 @@
+### IDEA ###
+.idea/
+*.iml
+.cmake-build-debug/
+### Rundirs ###
+./src/build/
+./src/output/
+./src/performance_logs/
