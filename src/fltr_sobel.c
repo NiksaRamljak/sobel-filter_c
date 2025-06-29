@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <math.h>
 #include <threads.h>
 
@@ -109,10 +110,12 @@ int sobel_thread_func(void *args) {
 }
 
 // threads based on image size
-int calc_thread(Image img) {
+int calc_thread(Image img, int user_override) {
     int total_size = img.width * img.height;
     // rough optimization
-    if (total_size< 500* 1024) {				//5k
+    if (user_override>0) {
+        return user_override;
+    }else if (total_size< 500* 1024) {			//5k
         return 1; 
     } else if (total_size < 1000 * 1024) {		//1m
         return 2;
@@ -161,13 +164,22 @@ void write_pgm(const char *filename, int width, int height, unsigned char *data)
 }
 
 int main(int argc, char *argv[]) {
-    if (argc < 3) {
-        fprintf(stderr, "Usage: %s <input_image.pgm> <output_image.pgm>\n", argv[0]);
-        return 1;
-    }
-
     const char *input_filename = argv[1];
     const char *output_filename = argv[2];
+
+    int user_override = 0;
+
+    // Accept only if "-t <num_threads>"
+    if (argc == 5 && strcmp(argv[3], "-t") == 0) {
+        user_override = atoi(argv[4]);
+        if (user_override <= 0) {
+            fprintf(stderr, "Invalid number of threads specified. Must be a positive integer.\n");
+            return 1;
+        }
+    } else if (argc != 3) {
+        fprintf(stderr, "Usage: %s <input_image.{pgm|jpg}> <output_image.{pgm|jpg}> [-t num_threads]\n", argv[0]);
+        return 1;
+    }
 
     // Read in image
     Image img = read_pgm(input_filename);
@@ -176,7 +188,7 @@ int main(int argc, char *argv[]) {
     unsigned char *output = (unsigned char *)malloc(img.width * img.height);
 
     //scaling
-    int num_threads = calc_thread(img);
+    int num_threads = calc_thread(img, user_override);
     printf("Using %d threads\n", num_threads);
 
     apply_sobel_parallel(img, output, num_threads);

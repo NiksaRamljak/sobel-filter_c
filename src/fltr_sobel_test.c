@@ -97,23 +97,22 @@ void apply_sobel_parallel(Image img, unsigned char *output, int num_threads) {
 
 
 int main(int argc, char *argv[]) {
-    if (argc < 3 || argc > 4) {
-        fprintf(stderr, "Usage: %s <input_image.{pgm|jpg}> <output_image.{pgm|jpg}> [num_threads]\n", argv[0]);
-        return 1;
-    }
-
     const char *input_filename = argv[1];
     const char *output_filename = argv[2];
 
     int user_override = 0;
-    if (argc == 4) {
-        user_override = atoi(argv[3]);
+
+    // Accept only if "-t <num_threads>"
+    if (argc == 5 && strcmp(argv[3], "-t") == 0) {
+        user_override = atoi(argv[4]);
         if (user_override <= 0) {
             fprintf(stderr, "Invalid number of threads specified. Must be a positive integer.\n");
             return 1;
         }
+    } else if (argc != 3) {
+        fprintf(stderr, "Usage: %s <input_image.{pgm|jpg}> <output_image.{pgm|jpg}> [-t num_threads]\n", argv[0]);
+        return 1;
     }
-
     Image img = read_image(input_filename);
 
     unsigned char *output = malloc(img.width * img.height);
