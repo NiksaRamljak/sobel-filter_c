@@ -3,6 +3,6 @@
 *.iml
 .cmake-build-debug/
 ### Rundirs ###
-./src/build/
-./src/output/
-./src/performance_logs/
+build/
+output/
+performance_logs/
