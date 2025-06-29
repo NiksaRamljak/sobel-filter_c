@@ -16,5 +16,4 @@ tested only on linux
 both output to ./performance_logs
 
 syntax is as follows:
-```fltr_sobel <input_file> <output_file> -t <threads>
-```
+```fltr_sobel <input_file> <output_file> -t <threads>```
